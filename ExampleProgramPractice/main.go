@@ -2,8 +2,10 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"os"
+	"strconv"
 )
 
 type Employee struct {
@@ -45,7 +47,54 @@ func main() {
 	//PracticeProgramForStructure()
 	//PracticeProgramForConstant()
 	//PracticeProgramForPointer()
-	PracticeProgramForArray()
+	//PracticeProgramForArray()
+	PracticeProgramForSlice()
+}
+func PracticeProgramForSlice() {
+	//creation of slice
+	//way 1
+	//var slice =[]int{1,2,3,4,5,6,7}
+	//slice = append(slice, 30,40,10)
+	//way 2
+	//slice:=make([]int,0)
+	//len 0 and capacity is 5 here
+	slice := make([]int, 0, 5)
+	slice = append(slice, 1, 2, 3, 4)
+	slice = append(slice, 10, 11)
+	fmt.Println("*************")
+	//way 1 to iterate value from slice
+	for i := 0; i < len(slice); i++ {
+		fmt.Print(slice[i], "  ")
+	}
+	fmt.Println()
+	fmt.Println("***********************")
+	// way 2 to iterate value from slice
+	for _, val := range slice {
+		fmt.Print(val, "  ")
+	}
+	fmt.Println()
+	fmt.Println("Length  ", len(slice))
+	fmt.Println("Capacity  ", cap(slice))
+
+
+	fmt.Println("Value After Deleting Element")
+
+	slice,err:=DeleteElementAtGivenIndexInSlice(slice,2)
+	if err!=nil{
+		fmt.Print(err.Error())
+	}else{
+		PrintArrayUsingRangeFor(slice)
+	}
+}
+func DeleteElementAtGivenIndexInSlice(slice []int, index int) ([]int, error) {
+	if index < 0 || index >= len(slice) {
+		return slice, errors.New("Index  " + strconv.Itoa(index) + " is Not in Range")
+	}else{
+		sl:=append(slice[:index],slice[index+1:]...)
+		//sl2:=append(slice[index+1:])
+		//sl=append(sl, sl2...)
+		return sl,nil
+	}
 }
 func PracticeProgramForArray() {
 	var arr [5]int
@@ -61,12 +110,12 @@ func PracticeProgramForArray() {
 		}
 	}
 	PrintArrayUsingRangeFor(arr[:])
-	changeValueInArrayUsingFUnction(&arr,50,1)
+	changeValueInArrayUsingFUnction(&arr, 50, 1)
 	PrintArrayUsingRangeFor(arr[:])
 	fmt.Printf("Maximum Value in My Array =%d", max)
 }
-func changeValueInArrayUsingFUnction(arr *[5]int,value,index int){
-	arr[index]=value
+func changeValueInArrayUsingFUnction(arr *[5]int, value, index int) {
+	arr[index] = value
 }
 func PracticeProgramForPointer() {
 	PointerSum()
