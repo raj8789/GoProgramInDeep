@@ -76,24 +76,32 @@ func PracticeProgramForSlice() {
 	fmt.Println("Length  ", len(slice))
 	fmt.Println("Capacity  ", cap(slice))
 
-
 	fmt.Println("Value After Deleting Element")
 
-	slice,err:=DeleteElementAtGivenIndexInSlice(slice,2)
-	if err!=nil{
+	slice, err := DeleteElementAtGivenIndexInSlice(slice, 2)
+	if err != nil {
 		fmt.Print(err.Error())
-	}else{
+	} else {
 		PrintArrayUsingRangeFor(slice)
 	}
+	//create array from slice
+	arr := slice[2:]
+	// if i change the value in array which is
+	// extracted from slice then the value in the slice also get changed
+	arr[0] = 49
+	fmt.Println("Element in Array  :")
+	PrintArrayUsingRangeFor(arr)
+	fmt.Println("Element in Slice  :")
+	PrintArrayUsingRangeFor(slice)
 }
 func DeleteElementAtGivenIndexInSlice(slice []int, index int) ([]int, error) {
 	if index < 0 || index >= len(slice) {
 		return slice, errors.New("Index  " + strconv.Itoa(index) + " is Not in Range")
-	}else{
-		sl:=append(slice[:index],slice[index+1:]...)
+	} else {
+		sl := append(slice[:index], slice[index+1:]...)
 		//sl2:=append(slice[index+1:])
 		//sl=append(sl, sl2...)
-		return sl,nil
+		return sl, nil
 	}
 }
 func PracticeProgramForArray() {
