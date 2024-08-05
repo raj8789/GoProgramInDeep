@@ -5,7 +5,10 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"runtime"
 	"strconv"
+	"sync"
+	"time"
 )
 
 type Employee struct {
@@ -49,7 +52,37 @@ func main() {
 	//PracticeProgramForPointer()
 	//PracticeProgramForArray()
 	//PracticeProgramForSlice()
-	PracticeProgramForPanic()
+	//PracticeProgramForPanic()
+	PracticeProgramForGoRoutine()
+}
+func PracticeProgramForGoRoutine() {
+	go func() {
+		fmt.Println("Hii GoRoutine 1")
+	}()
+	go func() {
+		fmt.Println("Hii GoRoutine 2")
+	}()
+	go func() {
+		fmt.Println("Hii GoRoutine 3")
+	}()
+	time.Sleep(3 * time.Second)
+	fmt.Println("Number of Running Gorutine in Application :", runtime.NumGoroutine())
+	ProgramOfGoRoutineWith_WaitGroup()
+}
+
+var wg *sync.WaitGroup
+
+func ProgramOfGoRoutineWith_WaitGroup() {
+	wg = &sync.WaitGroup{}
+	wg.Add(3)
+	go GoRoutine()
+	go GoRoutine()
+	go GoRoutine()
+	wg.Wait()
+}
+func GoRoutine() {
+	defer wg.Done()
+	fmt.Println("Hii I am GoRoutine")
 }
 func PracticeProgramForPanic() {
 	var x, y int
@@ -69,11 +102,11 @@ func DoArithmeticOperation(x, y int) {
 			DoArithmeticSkipDivideOperation(x, y)
 		}
 	}()
-	if y==0 {
+	if y == 0 {
 		panic("Can't Divide By Zero")
 	}
 	sum, diff, mult, div := x+y, x-y, x*y, x/y
-	fmt.Printf("Sum =%d ,Difference =%d  ,Multiply =%d  ,Division  =%d", sum, diff, mult, div)	
+	fmt.Printf("Sum =%d ,Difference =%d  ,Multiply =%d  ,Division  =%d", sum, diff, mult, div)
 }
 func DoArithmeticSkipDivideOperation(x, y int) {
 	sum, diff, mult := x+y, x-y, x*y
