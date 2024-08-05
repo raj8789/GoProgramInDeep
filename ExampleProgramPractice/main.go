@@ -48,7 +48,37 @@ func main() {
 	//PracticeProgramForConstant()
 	//PracticeProgramForPointer()
 	//PracticeProgramForArray()
-	PracticeProgramForSlice()
+	//PracticeProgramForSlice()
+	PracticeProgramForPanic()
+}
+func PracticeProgramForPanic() {
+	var x, y int
+	fmt.Println("Enter First Number")
+	fmt.Scan(&x)
+	fmt.Println("Enter Second Number")
+	fmt.Scan(&y)
+	DoArithmeticOperation(x, y)
+	fmt.Println()
+	fmt.Println("Operation Completed Successfully")
+}
+func DoArithmeticOperation(x, y int) {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Print(r)
+			fmt.Println()
+			DoArithmeticSkipDivideOperation(x, y)
+		}
+	}()
+	if y==0 {
+		panic("Can't Divide By Zero")
+	}
+	sum, diff, mult, div := x+y, x-y, x*y, x/y
+	fmt.Printf("Sum =%d ,Difference =%d  ,Multiply =%d  ,Division  =%d", sum, diff, mult, div)	
+}
+func DoArithmeticSkipDivideOperation(x, y int) {
+	sum, diff, mult := x+y, x-y, x*y
+	fmt.Printf("Sum =%d ,Difference =%d  ,Multiply =%d \n", sum, diff, mult)
+	fmt.Println("Hii Panic recovered Continue To Execute Program Again")
 }
 func PracticeProgramForSlice() {
 	//creation of slice
