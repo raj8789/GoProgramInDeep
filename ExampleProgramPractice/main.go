@@ -53,7 +53,104 @@ func main() {
 	//PracticeProgramForArray()
 	//PracticeProgramForSlice()
 	//PracticeProgramForPanic()
-	PracticeProgramForGoRoutine()
+	//PracticeProgramForGoRoutine()
+	PracticeProgramForChannel()
+}
+
+var waitGrp *sync.WaitGroup
+
+// We can't use same mutex to lock two different resources
+var mut *sync.Mutex
+var rederMut *sync.Mutex
+
+func PracticeProgramForChannel() {
+	waitGrp = &sync.WaitGroup{}
+	mut = &sync.Mutex{}
+	rederMut = &sync.Mutex{}
+	//var x chan int
+	//ChannelProgram1()
+
+	// beaware of this function it may generate deadlock in your program
+	//ChannelProgram2()
+	ChannelProgram3()
+}
+func ChannelProgram3() {
+	//var ch chan int
+	var noOfChannelYouWant int
+	fmt.Print("Enter The Number of Channel you want to create")
+	fmt.Scan(&noOfChannelYouWant)
+	ch := make(chan int, noOfChannelYouWant)
+	waitGrp.Add(noOfChannelYouWant)
+	for i := 0; i < noOfChannelYouWant; i++ {
+		go ReaderChannel(ch)
+		go WriterChannel(ch)
+	}
+	waitGrp.Wait()
+}
+
+func ChannelProgram2() {
+	ch := make(chan int)
+	var isContinue bool = true
+	var isTakingUserInput bool = false
+	var char int
+	for isContinue {
+		if !isTakingUserInput {
+			waitGrp.Add(1)
+			go WriterChannel(ch)
+			go ReaderChannel(ch)
+		}
+		go func() {
+			mut.Lock()
+			fmt.Print("Do You Want To Do More Operation On Channel: Press (1)")
+			isTakingUserInput = true
+			fmt.Scan(&char)
+			if char != 1 {
+				isContinue = false
+				close(ch)
+				waitGrp.Done()
+			}
+			isTakingUserInput = false
+			mut.Unlock()
+		}()
+
+	}
+	waitGrp.Wait()
+}
+func ReaderChannel(ch <-chan int) {
+	rederMut.Lock()
+	defer waitGrp.Done()
+	// this channel is unidirectional channel means from this channel only data can be read
+	val, ok := <-ch
+	if ok {
+		fmt.Println("Value In The Channel is")
+		fmt.Println(val, ok)
+		//go PrintTableOfNumber(val)
+	}
+	rederMut.Unlock()
+}
+func WriterChannel(ch chan<- int) {
+	// this channel is unidirectional channel means from this channel only data can be written
+	mut.Lock()
+	fmt.Println("Enter Value For Channel")
+	var val int
+	fmt.Scan(&val)
+	ch <- val
+	mut.Unlock()
+}
+func ChannelProgram1() {
+	// this channel is bidirectional whre both read and write operation can be performed
+	x := make(chan interface{})
+	go func() {
+		val, _ := <-x
+		fmt.Print(val)
+
+		val, _ = <-x
+		fmt.Print(val)
+	}()
+	x <- "Raushan"
+	x <- 10
+	//time.Sleep(2 * time.Second)
+	close(x)
 }
 func PracticeProgramForGoRoutine() {
 	go func() {
